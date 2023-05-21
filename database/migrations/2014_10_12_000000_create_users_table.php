@@ -21,6 +21,9 @@ return new class extends Migration
             $table->enum('is_active',['0','1'])->default('1')->comment('0 for Inactive and 1 for Active');
             $table->enum('is_verified',['0','1'])->default('0')->comment('0 for  unverified user and 1 for verified user');
             $table->enum('usertype',['admin','bc', 'reporter', 'editor', 'user'])->default('user')->comment('Usertype are based on user role!');
+            $table->double('wallet_balance')->default('0');
+            $table->string('device_token')->nullable();
+            $table->enum('device_type',['iOS','android'])->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
