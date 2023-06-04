@@ -1,5 +1,11 @@
 @extends('layouts.admin')
 @section('content')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+<style>
+    *{
+        font-size:13px;
+    }
+</style>
 <div class="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
 
     <!-- begin:: Subheader -->
@@ -23,7 +29,7 @@
             </div>
         </div>
     </div>
-
+    <input id="token" type="hidden" name="_token" value="{{ csrf_token() }}" />
     <!-- end:: Subheader -->
     <!-- begin:: Content -->
     <div class="kt-content  kt-grid__item kt-grid__item--fluid" id="kt_content">
@@ -49,28 +55,16 @@
                                         <li class="kt-nav__section kt-nav__section--first">
                                             <span class="kt-nav__section-text">Choose an option</span>
                                         </li>
-                                        <li class="kt-nav__item">
+                                        {{-- <li class="kt-nav__item">
                                             <a href="#" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la-print"></i>
                                                 <span class="kt-nav__link-text">Print</span>
                                             </a>
-                                        </li>
-                                        <li class="kt-nav__item">
-                                            <a href="#" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-copy"></i>
-                                                <span class="kt-nav__link-text">Copy</span>
-                                            </a>
-                                        </li>
+                                        </li> --}}
                                         <li class="kt-nav__item">
                                             <a href="#" class="kt-nav__link">
                                                 <i class="kt-nav__link-icon la la-file-excel-o"></i>
                                                 <span class="kt-nav__link-text">Excel</span>
-                                            </a>
-                                        </li>
-                                        <li class="kt-nav__item">
-                                            <a href="#" class="kt-nav__link">
-                                                <i class="kt-nav__link-icon la la-file-text-o"></i>
-                                                <span class="kt-nav__link-text">CSV</span>
                                             </a>
                                         </li>
                                         <li class="kt-nav__item">
@@ -98,7 +92,7 @@
                     <thead>
                         <tr>
                             <th>Sr. No.</th>
-                            <th>Title</th>
+                            <th>Category Name</th>
                             <th>Description</th>
                             <th>User Name</th>
                             <th>Status</th>
@@ -116,21 +110,22 @@
                                         <td>{{$cat->user->name ?? 'N/A'}}</td>
                                         <td>
                                                 @if($cat->is_active == '1')
-                                                    <a href="#" class="btn btn-sm btn-label-primary btn-bold">Active</a>
+                                                    <a href="#" onclick="categoryStatusUpdate('{{$cat['id']}}', 0)" class="btn btn-sm btn-label-primary btn-bold">Active</a>
                                                 @else
-                                                    <a href="#" class="btn btn-sm btn-label-danger btn-bold">In Active</a>
+                                                    <a href="#" onclick="categoryStatusUpdate('{{$cat['id']}}', 1)" class="btn btn-sm btn-label-danger btn-bold">In Active</a>
                                                 @endif
                                         </td>
                                         <td>
-                                            <span class="dropdown">
+                                            {{-- <span class="dropdown">
                                                 <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" data-toggle="dropdown" aria-expanded="true"><i class="la la-ellipsis-h"></i></a>
                                                 <div class="dropdown-menu dropdown-menu-right">
                                                     <a class="dropdown-item" href="#"><i class="la la-edit"></i> Edit Details</a>
                                                     <a class="dropdown-item" href="#"><i class="la la-leaf"></i> Update Status</a>
                                                     <a class="dropdown-item" href="#"><i class="la la-print"></i> Generate Report</a>
                                                 </div>
-                                            </span>
-                                            <a href="#" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View"><i class="la la-edit"></i></a>
+                                            </span> --}}
+                                            <a href="{{route('getViewCategory', $cat['id'])}}" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View"><i class="flaticon-edit"></i></a>
+                                            <a href="#" onclick="deleteCategoryData({{$cat['id']}})" class="btn btn-sm btn-clean btn-icon btn-icon-md" title="View"><i class="flaticon-delete"></i></a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -138,12 +133,64 @@
                         @endif
                     </tbody>
                 </table>
-
                 <!--end: Datatable -->
             </div>
         </div>
     </div>
-
     <!-- end:: Content -->
 </div>
 @endsection
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+    function categoryStatusUpdate(id, status){
+        var token = $("#token").val();
+        $.ajax({
+                type: "POST",
+                url: "{{route('getStatusCategory')}}",
+                data: {
+                    id: id,
+                    status: status,
+                    _token: token,
+                },
+                success: function(response) {
+                    // console.log(response);
+                    if(response.status = 'true'){
+                    toastr.success(response.message);
+                    setTimeout(function(){
+                            window.location.replace("{{route('getAllCategory')}}");
+                    }, 1000);
+                    }else{
+
+                    }
+
+                },
+        });
+    }
+
+    function deleteCategoryData(id){
+        var token = $("#token").val();
+        if (confirm("Are you sure.? \n Do you want to Delete Category.??")) {
+            $.ajax({
+                type: "POST",
+                url:"{{route('getDeleteCategory')}}",
+                data: {
+                    id: id,
+                _token: token,
+                },
+                success: function(response) {
+                    if(response.status = 'true'){
+                        toastr.success(response.message);
+                        setTimeout(function(){
+                            window.location.replace("{{route('getAllCategory')}}");
+                        }, 1000);
+                    }else {
+                        toastr.error(response.error);
+                    }
+                },
+            });
+        }
+        return false;
+    }
+</script>
+

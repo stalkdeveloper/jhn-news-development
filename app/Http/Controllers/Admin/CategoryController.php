@@ -56,15 +56,22 @@ class CategoryController extends Controller
     public function viewCategory($id){
         try {
             $data = $this->CategoryService->categoryView($id);
-            return view('admin.AllFile.Category.view-category')->with(compact('data'));
+            $date = $this->CategoryService->addCategorDate();
+
+            return view('admin.AllFile.Category.edit-category')->with(compact('data', 'date'));
         } catch (\Throwable $th) {
             //throw $th;
         }
     }
 
-    public function updateCategory(Request $request){
+    public function updateCategory(Request $request, CategoryValidator $category){
         try {
             $input = $request->all();
+
+            if (!$category->with($input)->passes()) {
+                return response()->json(['status'=>false, 'error'=>$category->getErrors()[0]]);
+            }
+
             $update = $this->CategoryService->categoryUpdate($input);
 
             if($update){
@@ -72,7 +79,7 @@ class CategoryController extends Controller
             }
                 return response()->json(['status'=>false, 'error'=>'Sorry, Unable to Update category..!!']);
         } catch (\Exception $e) {
-            // \Log::error($e->getMessage()." ".$e->getFile()." ".$e->getLine());
+            \Log::error($e->getMessage()." ".$e->getFile()." ".$e->getLine());
         }
     }
 

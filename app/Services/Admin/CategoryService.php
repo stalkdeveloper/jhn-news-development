@@ -14,7 +14,7 @@ class CategoryService extends Service
 {
    public function categoryAll($request){
     try {
-        $data = Category::with('user')->latest('id')->get();
+        $data = Category::with('user')->where('is_delete', '0')->latest('id')->get();
         return $data;
     } catch (\Throwable $th) {
         //throw $th;
@@ -61,9 +61,9 @@ class CategoryService extends Service
    public function categoryUpdate($request){
     try {
         $data = [
-            'type'             => $request['type'],
-            'title'              => $request['title'],
-            'description'  => $request['description'],
+            'user_id'        => Auth::user()->id,
+            'title'             => $request['category_name'],
+            'description' => $request['description'],
         ];     
 
         $update = Category::where('id', $request['category_id'])->update($data);
@@ -79,8 +79,11 @@ class CategoryService extends Service
 
    public function categoryDelete($request){
     try {
-        // \Log::info($request);
-        $delete = Category::where('id', $request['id'])->delete();
+        $data = [
+            'is_active'  => '0',
+            'is_delete'  => '1',
+        ];
+        $delete = Category::where('id', $request['id'])->update($data);
         if($delete){
             return true;
         }

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('title')->nullable();
             $table->longText('description')->nullable();
             $table->enum('is_active',['0','1'])->default('0')->comment('0 for Inactive and 1 for Active');
+            $table->enum('is_delete',['0','1'])->default('0')->comment('0 for not deleted and 1 for Deleted');
             $table->timestamps();
         });
     }
