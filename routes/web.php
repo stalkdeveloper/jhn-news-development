@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\CategoryController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -27,5 +29,20 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::middleware('auth')->group(function () {
+
+    // --- News --- \\
+
+    // --- Category --- \\
+    Route::get('all-category', [CategoryController::class,'allCategory'])->name('getAllCategory');
+    Route::get('create-category', [CategoryController::class,'addCategory'])->name('getCategoryAdd');
+    Route::post('store-category', [CategoryController::class,'storeCategory'])->name('getStoreCategory');
+    Route::get('view-category/{id}', [CategoryController::class,'viewCategory'])->name('getViewCategory');
+    Route::post('update-category', [CategoryController::class,'updateCategory'])->name('getUpdateCategory');
+    Route::post('category-status-update', [CategoryController::class, 'deleteCategory'])->name('getDeleteCategory');
+    Route::post('delete-category', [CategoryController::class, 'statusCategory'])->name('getStatusCategory');
+});
+
 
 require __DIR__.'/auth.php';

@@ -20,6 +20,9 @@
 		<!--end::Fonts -->
 
 		<!--begin::Page Vendors Styles(used by this page) -->
+		<link href="{{asset('admin/vendors/custom/datatables/datatables.bundle.css')}}" rel="stylesheet" type="text/css" />
+
+		<!--begin::Page Vendors Styles(used by this page) -->
 		<link href="{{asset('admin/vendors/custom/fullcalendar/fullcalendar.bundle.css')}}" rel="stylesheet" type="text/css" />
 
 		<!--end::Page Vendors Styles -->
@@ -820,6 +823,12 @@
 
 <!--begin::Page Scripts(used by this page) -->
 <script src="{{asset('admin/app/custom/general/dashboard.js')}}" type="text/javascript"></script>
+
+<!--begin::Page Vendors(used by this page) -->
+<script src="{{asset('admin/vendors/custom/datatables/datatables.bundle.js')}}" type="text/javascript"></script>
+
+<!--begin::Page Scripts(used by this page) -->
+<script src="{{asset('admin/app/custom/general/crud/datatables/advanced/column-rendering.js')}}" type="text/javascript"></script>
 
 <!--end::Page Scripts -->
 
