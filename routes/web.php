@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\NewsController;
 
 
 /*
@@ -33,6 +34,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
 
     // --- News --- \\
+    Route::get('all-news', [NewsController::class,'allNews'])->name('getAllNews');
+    Route::get('create-news',[NewsController::class,'addNews'])->name('getAddNews');
 
     // --- Category --- \\
     Route::get('all-category', [CategoryController::class,'allCategory'])->name('getAllCategory');
